@@ -4,18 +4,11 @@ def inicio_ruta(n, m, grafo):
     x = random.randint(1,n)
     if x==1:
         y = random.randint(1,m)
-        print("x es 1")
-        print("y puede estar entre 1 y m")
     elif(1<x or x<n):
-        print("x esta entre 1 y n")
         l=[1,m]
         y = random.choice(l)
-        print(y)
-        print("y deberia ser 1 o n")
     elif x==n:
-        print("x es igual a n")
         y = random.randint(1,m)
-        print("y puede estar entre 1 y m")
     print("nodo de inicio:", end=" ")
     print(x,y)
     conexiones=[]
@@ -57,13 +50,17 @@ def sgte_ruta(lista,n,m,ruta1,grafo1,grafo2):
             x,y=edge[1]
             if es_borde(x,y,n,m):
                 conexiones.append((x,y))
+    print("posibles conexiones:", end="")
     print(conexiones)
     nueva_ruta=random.choice(conexiones)
+    while nueva_ruta in lista:
+        nueva_ruta=random.choice(conexiones)
+    lista.append(nueva_ruta)
     for node in grafo1.nodes:
         if ruta1==node:
             grafo1.add_edge((ruta1),(nueva_ruta))
             #grafo1.add_edge((nueva_ruta), (ruta1))
-    lista.append(nueva_ruta)
+    
     return lista, nueva_ruta, grafo1
         
 def es_esquina(x, y, x1, y1 ,n, m, contador):#Retorna True si es esquina
