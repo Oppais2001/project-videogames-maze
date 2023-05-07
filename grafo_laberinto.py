@@ -42,7 +42,7 @@ def inicio_ruta(n, m, grafo):
     Lista_de_conexiones.append(ruta1)
     return Lista_de_conexiones,ruta1,Grafo_Ruta
 
-def sgte_ruta(lista,n,m,ruta1,grafo1,grafo2):
+def sgte_ruta(lista,n,m,ruta1,grafo1,grafo2,Fin):
     conexiones=[]
     print(ruta1)
     for edge in grafo2.edges:
@@ -53,15 +53,27 @@ def sgte_ruta(lista,n,m,ruta1,grafo1,grafo2):
     print("posibles conexiones:", end="")
     print(conexiones)
     nueva_ruta=random.choice(conexiones)
-    while nueva_ruta in lista:
+    print("inicio del bucle")
+    while(nueva_ruta in lista) and Fin==False:
+        restriccion=0
         nueva_ruta=random.choice(conexiones)
+        for c in conexiones:
+            for l in lista:
+                x,y=c
+                x1,y1=l
+                if x==x1 and y==y1:
+                    restriccion+=1
+        if len(conexiones)==restriccion:
+            print("Fin de camino")
+            Fin=True
+    print("fin de bucle")
     lista.append(nueva_ruta)
     for node in grafo1.nodes:
         if ruta1==node:
             grafo1.add_edge((ruta1),(nueva_ruta))
             #grafo1.add_edge((nueva_ruta), (ruta1))
     
-    return lista, nueva_ruta, grafo1
+    return lista, nueva_ruta, grafo1, Fin
         
 def es_esquina(x, y, x1, y1 ,n, m, contador):#Retorna True si es esquina
     if es_borde(x1, y1, n, m):
@@ -139,14 +151,32 @@ def imprime_grafo(grafo):
     for edge in grafo.edges:
         print(edge)
         
-            
+def GrafoaMatriz(n,m,Grafo,lista):
+    print("De grafo a matriz")
+    matriz = []
+    for i in range(n):
+        matriz.append([])
+        for j in range(m):
+            matriz[i].append(" ")
+    for a in lista:
+        x, y = a
+        matriz[x-1][y-1]="X"
+    
+    for i in range(n):
+        print(matriz[i])
 #PROGRAMA PRINCIPAL
 n = int(input("Ingrese la cantidad de nodos verticales del grafos:"))
 m = int(input("Ingrese la cantidad de nodos horizontales del grafo:"))
 laberinto = crea_grafo_unidireccional(n,m)
-Lista, ruta1,Camino = inicio_ruta(n, m, laberinto)
-for i in range(5):
-    Lista, ruta1,Camino=sgte_ruta(Lista,n,m,ruta1,Camino,laberinto)
+Lista, ultima_ruta,Camino = inicio_ruta(n, m, laberinto)
+Fin=False
+for i in range(200):
+    Lista, ultima_ruta,Camino,Fin=sgte_ruta(Lista,n,m,ultima_ruta,Camino,laberinto,Fin)
+    if Fin:
+        print("ULTIMA CONEXION")
+        break
 print(Lista)
+GrafoaMatriz(n,m,Camino,Lista)
+
 
 #final = valida_ruta(x, y, m, n)
