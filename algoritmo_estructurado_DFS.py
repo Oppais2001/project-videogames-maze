@@ -34,8 +34,8 @@ def inicio_ruta(n, m):
         y = random.choice(l)
     elif x==n:
         y = random.randint(1,m-1)
-    print("nodo inicial:", end=" ")
-    print(x,y)
+    #print("nodo inicial:", end=" ")
+    #print(x,y)
     return x,y
     
 def final_ruta(inicio,n, m):
@@ -52,46 +52,54 @@ def final_ruta(inicio,n, m):
             y = random.choice(l)
         elif x==n:
             y = random.randint(1,m-1)
-    print("nodo final:", end=" ")
-    print(x,y)
+    #print("nodo final:", end=" ")
+    #print(x,y)
     return x,y
 def dfs(node,node_final,visitados,grafo):
     visitados.append(node)
-    print("nodo base:", end=" ")
-    print(node)
+    #print("nodo base:", end=" ")
+    #print(node)
     for vecinos in grafo[node]:
         if vecinos not in visitados:
-            print("nodos vecinos:", end=" ")
-            print(vecinos)
+            #print("nodos vecinos:", end=" ")
+            #print(vecinos)
             if vecinos!=node_final:
                 dfs(vecinos,node_final, visitados, grafo)
             else:
                 visitados.append(vecinos)
-                print("Final")
+                #print("Final")
                 break
             return visitados
 def GrafoaMatriz(n,m,lista):
-    print("De grafo a matriz")
+    #print("De grafo a matriz")
     matriz = []
     for i in range(n):
         matriz.append([])
         for j in range(m):
-            matriz[i].append("X")
+            matriz[i].append(" ")
     for a in lista:
         x, y = a
-        i=lista.index(a)
-        matriz[x-1][y-1]="{}".format(i)
-        
-    for i in range(n):
-        print(matriz[i])
-    return matriz          
+        indice=lista.index(a)
+        matriz[x-1][y-1]="{}".format(indice)
+    return matriz,indice
  
-n=8
-m=8
+n=14
+m=14
 grafo=crea_grafo_unidireccional(n,m)
 inicio=inicio_ruta(n,m)
 final=final_ruta(inicio,n,m)
 lista=[]
 lista=dfs(inicio,final,lista,grafo)
-print(lista)
-matriz=GrafoaMatriz(n,m,lista)
+#print(lista)
+matriz,i=GrafoaMatriz(n,m,lista)
+#print(i)
+while i<195:
+    inicio=inicio_ruta(n,m)
+    final=final_ruta(inicio,n,m)
+    lista=[]
+    lista=dfs(inicio,final,lista,grafo)
+    matriz,i=GrafoaMatriz(n,m,lista)
+    
+for x in range(n):
+    print(matriz[x])
+    
