@@ -41,6 +41,7 @@ def inicio_ruta(n, m):
 def final_ruta(inicio,n, m):
     x1,y1 = inicio
     x = random.randint(1,n)
+    pared=str("")
     while x==x1:
         x = random.randint(1,n)
     y=y1
@@ -52,10 +53,20 @@ def final_ruta(inicio,n, m):
             y = random.choice(l)
         elif x==n:
             y = random.randint(1,m-1)
+            
+    if y==1:
+        pared="izquierda"
+    elif y==m:
+        pared="derecha"
+    if x==1:
+        pared="arriba"
+    elif x==n:
+        pared="abajo"
+        
     #print("nodo final:", end=" ")
     #print(x,y)
-    return x,y
-def dfs(node,node_final,visitados,grafo):
+    return (x,y),pared
+def dfs(node,node_final,visitados,grafo,):
     visitados.append(node)
     #print("nodo base:", end=" ")
     #print(node)
@@ -70,36 +81,63 @@ def dfs(node,node_final,visitados,grafo):
                 #print("Final")
                 break
             return visitados
-def GrafoaMatriz(n,m,lista):
-    #print("De grafo a matriz")
+def GrafoaMatriz(n,m,lista,pared):#De grafo a matriz
     matriz = []
-    for i in range(n):
+    for i in range((2*n)+1):
         matriz.append([])
-        for j in range(m):
-            matriz[i].append(" ")
-    for a in lista:
-        x, y = a
-        indice=lista.index(a)
-        matriz[x-1][y-1]="{}".format(indice)
+        for j in range((2*m)+1):
+            matriz[i].append("X")
+    for a in range(len(lista)):
+        x, y = lista[a]
+        indice=a
+        matriz[(2*x)-1][(2*y)-1]="{}".format(" ")
+        if a+1<len(lista):
+            x1,y1 = lista[a+1]
+            if x==x1:
+                if y-y1==1:#"i"
+                    matriz[(2*x)-1][(2*y)-2]=" "
+                elif y-y1==-1:#"d"
+                    matriz[(2*x)-1][(2*y)]=" "
+            if y==y1:
+                if x-x1==1:#"s"
+                    matriz[(2*x)-2][(2*y)-1]=" "
+                elif x-x1==-1:#"b"
+                    matriz[(2*x)][(2*y)-1]=" "
+        if a==0:
+            matriz[(2*x)-1][(2*y)-1]="p"
+        if a+1==len(lista):
+            if pared=="arriba":
+                matriz[(2*x)-2][(2*y)-1]=" "
+            if pared=="abajo":
+                matriz[(2*x)][(2*y)-1]=" "
+            if pared=="izquierda":
+                matriz[(2*x)-1][(2*y)-2]=" "
+            if pared=="derecha":
+                matriz[(2*x)-1][(2*y)]=" "
     return matriz,indice
- 
+
+def imprime_matriz(matriz):   
+    for lista in matriz:
+        print("[", end=" ")
+        for elemento in lista:
+            print(elemento, end=" ")
+        print("]")
+
 n=14
 m=14
 grafo=crea_grafo_unidireccional(n,m)
 inicio=inicio_ruta(n,m)
-final=final_ruta(inicio,n,m)
+final,pared=final_ruta(inicio,n,m)
 lista=[]
 lista=dfs(inicio,final,lista,grafo)
-#print(lista)
-matriz,i=GrafoaMatriz(n,m,lista)
-#print(i)
+matriz,i=GrafoaMatriz(n,m,lista,pared)
 while i<195:
     inicio=inicio_ruta(n,m)
-    final=final_ruta(inicio,n,m)
+    final,pared=final_ruta(inicio,n,m)
     lista=[]
     lista=dfs(inicio,final,lista,grafo)
-    matriz,i=GrafoaMatriz(n,m,lista)
-    
-for x in range(n):
-    print(matriz[x])
-    
+    matriz,i=GrafoaMatriz(n,m,lista,pared)
+#print(lista)
+#print(final, pared)
+imprime_matriz(matriz)
+#print(grafo)
